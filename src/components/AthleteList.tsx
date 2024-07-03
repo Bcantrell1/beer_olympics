@@ -12,11 +12,15 @@ interface Athlete {
   bronze: number;
 }
 
-export default function AthleteList({ athletes }) {
+interface AthleteListProps {
+  athletes: Athlete[];
+}
+
+export default function AthleteList({ athletes }: AthleteListProps) {
   const updateMedal = async (id: string, medal: 'gold' | 'silver' | 'bronze') => {
     const athleteRef = doc(db, 'athletes', id);
     const athlete = athletes.find((a) => a.id === id);
-    
+   
     if (athlete) {
       await updateDoc(athleteRef, {
         [medal]: (athlete[medal] || 0) + 1,

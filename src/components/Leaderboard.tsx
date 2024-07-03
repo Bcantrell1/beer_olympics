@@ -2,7 +2,19 @@
 
 import { useMemo } from 'react';
 
-export default function Leaderboard({ athletes }) {
+interface Athlete {
+  id: string;
+  name: string;
+  gold: number;
+  silver: number;
+  bronze: number;
+}
+
+interface LeaderboardProps {
+  athletes: Athlete[];
+}
+
+export default function Leaderboard({ athletes }: LeaderboardProps) {
   const sortedAthletes = useMemo(() => {
     return [...athletes].sort((a, b) => {
       const aPoints = (a.gold * 3) + (a.silver * 2) + a.bronze;

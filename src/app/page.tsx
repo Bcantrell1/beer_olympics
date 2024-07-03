@@ -1,21 +1,35 @@
 'use client';
 
 import { db } from '@/firebase/config';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { DocumentData, QuerySnapshot, collection, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import AddAthlete from '../components/AddAthlete';
 import AthleteList from '../components/AthleteList';
 import Leaderboard from '../components/Leaderboard';
 
+interface Athlete {
+  id: string;
+  name: string;
+  gold: number;
+  silver: number;
+  bronze: number;
+}
+
 export default function Home() {
-  const [athletes, setAthletes] = useState([]);
+  const [athletes, setAthletes] = useState<Athlete[]>([]);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'athletes'), (snapshot) => {
-      setAthletes(
-        snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-      );
-    });
+    const unsubscribe = onSnapshot(
+      collection(db, 'athletes'),
+      (snapshot: QuerySnapshot<DocumentData>) => {
+        setAthletes(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...(doc.data() as Omit<Athlete, 'id'>),
+          }))
+        );
+      }
+    );
 
     return () => unsubscribe();
   }, []);
